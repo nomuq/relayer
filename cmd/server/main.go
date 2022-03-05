@@ -26,7 +26,7 @@ import (
 	"time"
 
 	cfg "github.com/relayer/relayer/pkg/config"
-	"github.com/relayer/relayer/pkg/store"
+	str "github.com/relayer/relayer/pkg/store"
 	"github.com/relayer/relayer/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -101,7 +101,11 @@ func main() {
 			// Log the config.
 			utils.LogConfig(config)
 
-			store.NewStore(config.Database, config.DBConnectionURL)
+			// Initialize the database.
+			store, err := str.NewStore(config.Database, config.DBConnectionURL)
+			if err != nil {
+				logrus.Fatalf("failed to create database: %v", err)
+			}
 			defer store.Close()
 
 			return nil
