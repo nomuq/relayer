@@ -29,13 +29,6 @@ import (
 
 func ColorTable() table.Writer {
 	tw := table.NewWriter()
-	// tw.Style().Color.Header = text.Colors{text.FgGreen}
-	// tw.SetColumnConfigs(
-	// 	[]table.ColumnConfig{
-	// 		{Number: 1, Colors: text.Colors{text.FgYellow}},
-	// 	},
-	// )
-	// tw.Style().Options.DrawBorder = false
 	tw.SetOutputMirror(os.Stdout)
 	tw.SetStyle(table.StyleLight)
 	return tw
