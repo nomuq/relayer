@@ -99,19 +99,19 @@ func (s *Store) AutoMigrate(database string) error {
 
 	sql := ""
 	if database == "postgresql" {
-		file, err := ioutil.ReadFile("migrate/postgresql.sql")
+		file, err := ioutil.ReadFile("sql/postgresql.sql")
 		if err != nil {
 			return err
 		}
 		sql = string(file)
 	} else if database == "mysql" {
-		file, err := ioutil.ReadFile("migrate/mysql.sql")
+		file, err := ioutil.ReadFile("sql/mysql.sql")
 		if err != nil {
 			return err
 		}
 		sql = string(file)
 	} else if database == "cockroachdb" {
-		file, err := ioutil.ReadFile("migrate/cockroachdb.sql")
+		file, err := ioutil.ReadFile("sql/cockroachdb.sql")
 		if err != nil {
 			return err
 		}
