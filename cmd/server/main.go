@@ -26,6 +26,7 @@ import (
 	"time"
 
 	cfg "github.com/relayer/relayer/pkg/config"
+	"github.com/relayer/relayer/pkg/store"
 	"github.com/relayer/relayer/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -63,6 +64,20 @@ func main() {
 				Value:       "",
 				Destination: &config.APISecret,
 			},
+			&cli.StringFlag{
+				Name:        "database",
+				Usage:       "Database type",
+				EnvVars:     []string{"RELAYER_DATABASE"},
+				Value:       "postgresql",
+				Destination: &config.Database,
+			},
+			&cli.StringFlag{
+				Name:        "db-connection-url",
+				Usage:       "Database connection URL",
+				EnvVars:     []string{"RELAYER_DB_CONNECTION_URL"},
+				Value:       "postgres://postgres:postgres@localhost:5432/relayer?sslmode=disable",
+				Destination: &config.DBConnectionURL,
+			},
 		},
 		Commands: []*cli.Command{},
 		Action: func(c *cli.Context) error {
@@ -85,6 +100,9 @@ func main() {
 
 			// Log the config.
 			utils.LogConfig(config)
+
+			store.NewStore(config.Database, config.DBConnectionURL)
+			defer store.Close()
 
 			return nil
 		},

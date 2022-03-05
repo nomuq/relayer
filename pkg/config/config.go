@@ -21,7 +21,9 @@
 package config
 
 type RelayerConfig struct {
-	JWTSecret string
-	APIKey    string
-	APISecret string
+	JWTSecret       string
+	APIKey          string
+	APISecret       string
+	Database        string
+	DBConnectionURL string
 }
