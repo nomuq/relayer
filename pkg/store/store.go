@@ -65,9 +65,10 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 		return nil, fmt.Errorf("unknown adapter: %s", adapter)
 	}
 
-	return nil, nil
+	return store, nil
 }
 
 func (s *Store) Close() {
+
 	s.Session.Close()
 }
