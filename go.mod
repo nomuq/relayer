@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/jedib0t/go-pretty/v6 v6.2.7
+	github.com/jmoiron/sqlx v1.3.4
 	github.com/sirupsen/logrus v1.8.1
 	github.com/urfave/cli/v2 v2.3.0
 )
