@@ -69,6 +69,5 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 }
 
 func (s *Store) Close() {
-
 	s.Session.Close()
 }
