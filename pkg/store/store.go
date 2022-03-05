@@ -127,7 +127,7 @@ func (s *Store) AutoMigrate(database string) error {
 		return err
 	}
 
-	logrus.Info("AutoMigrate: tables created")
+	logrus.Info("Auto migrate completed")
 
 	return nil
 }
