@@ -20,7 +20,10 @@
 
 package models
 
+import "time"
+
 type User struct {
-	ID       string `json:"id" db:"id,omitempty"`
-	Username string `json:"username" db:"username"`
+	ID        string     `json:"id" db:"id,omitempty"`
+	Username  string     `json:"username" db:"username"`
+	CreatedAt *time.Time `json:"created_at" db:"created_at"`
 }

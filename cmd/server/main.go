@@ -108,6 +108,11 @@ func main() {
 			}
 			defer store.Close()
 
+			err = store.AutoMigrate(config.Database)
+			if err != nil {
+				logrus.Fatalf("failed to migrate database: %v", err)
+			}
+
 			return nil
 		},
 	}
