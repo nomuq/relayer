@@ -10,4 +10,4 @@
 
 # Environment Variables
 
-    - `RELAYER_DATABASE`: Database Type (cockroachdb, mongo, mysql, postgresql) Default: postgresql
+    `RELAYER_DATABASE`: Database Type (cockroachdb, mongo, mysql, postgresql) Default: postgresql
