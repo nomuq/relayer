@@ -21,7 +21,7 @@
 package store
 
 import (
-	"fmt"
+	"context"
 
 	"github.com/sirupsen/logrus"
 )
@@ -29,8 +29,8 @@ import (
 // AutoMigrate Create tables if not exists
 func (s *Store) AutoMigrate(database string) error {
 
-	if s.DBClient.IsClosed() {
-		return fmt.Errorf("database connection is closed")
+	if err := s.DBClient.Ping(context.Background()); err != nil {
+		return err
 	}
 
 	// sql := ""

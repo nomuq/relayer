@@ -58,6 +58,6 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 }
 
 // Close closes the store
-func (s *Store) Close() error {
-	return s.DBClient.Close()
+func (s *Store) Close() {
+	s.DBClient.Close()
 }
