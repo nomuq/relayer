@@ -57,8 +57,6 @@ func (interceptor *Interceptor) authorize(ctx context.Context, method string, pa
 	// if api-secret is provided, validate it else check for authorization header and validate it else return error
 	if md.Get("api-secret") != nil {
 		if md.Get("api-secret")[0] != interceptor.config.APISecret {
-			// set is admin in metadata to true
-			md.Set("is-admin", "true")
 			return status.Errorf(codes.Unauthenticated, "unauthorized")
 		}
 	} else {

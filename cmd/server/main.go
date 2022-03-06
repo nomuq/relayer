@@ -62,42 +62,6 @@ func main() {
 				Usage:     "Load configuration from `FILE`",
 				TakesFile: true,
 			},
-			// &cli.StringFlag{
-			// 	Name:        "api-key",
-			// 	Usage:       "API key for relayer-server",
-			// 	EnvVars:     []string{"RELAYER_API_KEY"},
-			// 	Value:       "",
-			// 	Destination: &config.APIKey,
-			// },
-			// &cli.StringFlag{
-			// 	Name:        "api-secret",
-			// 	Usage:       "API secret for relayer-server",
-			// 	EnvVars:     []string{"RELAYER_API_SECRET"},
-			// 	Value:       "",
-			// 	Destination: &config.APISecret,
-			// },
-			// &cli.StringFlag{
-			// 	Name:    "database",
-			// 	Usage:   "Database type",
-			// 	EnvVars: []string{"RELAYER_DATABASE"},
-			// 	Value:   "",
-
-			// 	Destination: &config.Database,
-			// },
-			// &cli.StringFlag{
-			// 	Name:        "db-connection-url",
-			// 	Usage:       "Database connection URL",
-			// 	EnvVars:     []string{"RELAYER_DB_CONNECTION_URL"},
-			// 	Value:       "",
-			// 	Destination: &config.DBConnectionURL,
-			// },
-			// &cli.IntFlag{
-			// 	Name:        "port",
-			// 	Usage:       "Port to listen on",
-			// 	EnvVars:     []string{"RELAYER_PORT"},
-			// 	Value:       0,
-			// 	Destination: &config.Port,
-			// },
 		},
 		Commands: []*cli.Command{
 			{
@@ -124,7 +88,7 @@ func main() {
 			if os.Getenv("RELAYER_API_KEY") != "" {
 				config.APIKey = os.Getenv("RELAYER_API_KEY")
 			} else if config.APIKey == "" {
-				config.APIKey = utils.GenerateRandomString(15)
+				config.APIKey = utils.GenerateRandomString(35)
 			}
 
 			// check if api secret enviroment variable is provided then use it
@@ -191,7 +155,7 @@ func main() {
 			)
 
 			// Register the relayer services with the gRPC server.
-			relayer := relayer.NewRelayerServer(store)
+			relayer := relayer.NewRelayerServer(config, store)
 			proto.RegisterRelayerServer(server, relayer)
 
 			// listen on the port
