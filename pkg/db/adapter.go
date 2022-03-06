@@ -7,4 +7,5 @@ type Adapter interface {
 	Open(ctx context.Context) error
 	Close()
 	Ping(ctx context.Context) error
+	AutoMigrate(ctx context.Context) error
 }

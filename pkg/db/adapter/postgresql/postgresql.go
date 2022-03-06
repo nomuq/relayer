@@ -2,8 +2,10 @@ package postgresql
 
 import (
 	"context"
+	"io/ioutil"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/sirupsen/logrus"
 )
 
 type PostgreSQLAdapter struct {
@@ -32,4 +34,22 @@ func (adapter *PostgreSQLAdapter) Close() {
 
 func (adapter *PostgreSQLAdapter) Ping(ctx context.Context) error {
 	return adapter.connection.Ping(ctx)
+}
+
+func (adapter *PostgreSQLAdapter) AutoMigrate(ctx context.Context) error {
+
+	file, err := ioutil.ReadFile("sql/postgresql.sql")
+	if err != nil {
+		return err
+	}
+	sql := string(file)
+
+	_, err = adapter.connection.Exec(ctx, sql)
+	if err != nil {
+		return err
+	}
+
+	logrus.Info("Auto migrate completed")
+
+	return nil
 }

@@ -34,7 +34,7 @@ type Store struct {
 }
 
 // NewStore creates a new store
-func NewStore(adapter string, connectionURL string) (*Store, error) {
+func NewStore(ctx context.Context, adapter string, connectionURL string) (*Store, error) {
 
 	// Create new store instance
 	store := &Store{}
@@ -49,7 +49,7 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 		return nil, fmt.Errorf("unknown adapter: %s", adapter)
 	}
 
-	err := store.DBClient.Open(context.Background())
+	err := store.DBClient.Open(ctx)
 	if err != nil {
 		return nil, err
 	}

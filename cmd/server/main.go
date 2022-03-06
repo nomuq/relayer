@@ -169,14 +169,14 @@ func main() {
 			config.Print()
 
 			// Initialize the database.
-			store, err := store.NewStore(config.Database, config.DBConnectionURL)
+			store, err := store.NewStore(c.Context, config.Database, config.DBConnectionURL)
 			if err != nil {
 				return err
 			}
 			defer store.Close()
 
 			// Auto migrate the database. (Create tables if not exists)
-			err = store.AutoMigrate(config.Database)
+			err = store.AutoMigrate(c.Context)
 			if err != nil {
 				return err
 			}
