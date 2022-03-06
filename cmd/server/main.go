@@ -45,6 +45,12 @@ func main() {
 		Description: `relayer-server is a high performance instant messaging server.`,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
+				Name:      "config",
+				Aliases:   []string{"c"},
+				Usage:     "Load configuration from `FILE`",
+				TakesFile: true,
+			},
+			&cli.StringFlag{
 				Name:        "api-key",
 				Usage:       "API key for relayer-server",
 				EnvVars:     []string{"RELAYER_API_KEY"},
@@ -76,6 +82,13 @@ func main() {
 		Commands: []*cli.Command{},
 		Action: func(c *cli.Context) error {
 			fmt.Println(utils.RelayerLogo())
+
+			// Load configuration from file
+			err := config.Load(c.String("config"))
+			if err != nil {
+				return err
+			}
+
 			// If API key is not provided, generate a random one.
 			if config.APIKey == "" {
 				config.APIKey = utils.GenerateRandomString(15)
@@ -86,19 +99,25 @@ func main() {
 				config.APISecret = utils.GenerateRandomString(52)
 			}
 
+			// write the config to a file
+			err = config.Write()
+			if err != nil {
+				return err
+			}
+
 			// Log the config.
-			utils.LogConfig(config)
+			config.Print()
 
 			// Initialize the database.
 			store, err := str.NewStore(config.Database, config.DBConnectionURL)
 			if err != nil {
-				logrus.Fatalf("failed to create database: %v", err)
+				return err
 			}
 			defer store.Close()
 
 			err = store.AutoMigrate(config.Database)
 			if err != nil {
-				logrus.Fatalf("failed to migrate database: %v", err)
+				return err
 			}
 
 			return nil

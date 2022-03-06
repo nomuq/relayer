@@ -20,9 +20,96 @@
 
 package config
 
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+
+	"github.com/jedib0t/go-pretty/v6/table"
+	"gopkg.in/yaml.v3"
+)
+
 type RelayerConfig struct {
-	APIKey          string
-	APISecret       string
-	Database        string
-	DBConnectionURL string
+	APIKey          string `yaml:"api_key"`
+	APISecret       string `yaml:"api_secret"`
+	Database        string `yaml:"database"`
+	DBConnectionURL string `yaml:"db_connection_url"`
+	path            string
+}
+
+func NewRelayerConfig() *RelayerConfig {
+	return &RelayerConfig{}
+}
+
+func (c *RelayerConfig) Load(path string) error {
+	c.path = path
+	if c.path == "" {
+		c.path = "./config.yaml"
+	}
+
+	// check if file exists if not create it
+	if _, err := os.Stat(c.path); os.IsNotExist(err) {
+		// create file at path
+		_, err = os.Create(c.path)
+		if err != nil {
+			return err
+		}
+	}
+
+	// load config file
+	err := c.LoadYAML()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func (c *RelayerConfig) LoadYAML() error {
+	yfile, err := ioutil.ReadFile(c.path)
+	if err != nil {
+		return err
+	}
+	err = yaml.Unmarshal(yfile, &c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *RelayerConfig) Write() error {
+	data, err := yaml.Marshal(&c)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(c.path, data, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ColorTable() table.Writer {
+	tw := table.NewWriter()
+	tw.SetOutputMirror(os.Stdout)
+	tw.SetStyle(table.StyleLight)
+	return tw
+}
+
+func (c *RelayerConfig) Print() {
+	t := ColorTable()
+	t.AppendHeader(table.Row{
+		"API key",
+		"API secret",
+	})
+	t.AppendRow(table.Row{
+		c.APIKey,
+		c.APISecret,
+	})
+	t.Render()
+
+	// Add Extra new line after table
+	fmt.Println()
 }

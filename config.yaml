@@ -1,0 +1,4 @@
+api_key: xqFSuEEvs3q9gjx
+api_secret: fHMjL8jOPQ58XrG9imroK4VXXhUn540EFAQA0tGV53lyiz0n4cJr
+database: postgresql
+db_connection_url: postgres://postgres:postgres@localhost:5432/relayer?sslmode=disable

@@ -21,6 +21,8 @@
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Drop all existing tables [TODO: Remove this once we have a migration tool]
+DROP TABLE IF EXISTS "public"."users";
 
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT Uuid_generate_v4(), 
