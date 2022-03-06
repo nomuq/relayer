@@ -45,13 +45,6 @@ func main() {
 		Description: `relayer-server is a high performance instant messaging server.`,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:        "jwt-secret",
-				Usage:       "JWT secret key",
-				EnvVars:     []string{"RELAYER_JWT_SECRET"},
-				Value:       "",
-				Destination: &config.JWTSecret,
-			},
-			&cli.StringFlag{
 				Name:        "api-key",
 				Usage:       "API key for relayer-server",
 				EnvVars:     []string{"RELAYER_API_KEY"},
@@ -83,12 +76,6 @@ func main() {
 		Commands: []*cli.Command{},
 		Action: func(c *cli.Context) error {
 			fmt.Println(utils.RelayerLogo())
-
-			// If JWT secret key is not provided, generate a random one.
-			if config.JWTSecret == "" {
-				config.JWTSecret = utils.GenerateRandomString(32)
-			}
-
 			// If API key is not provided, generate a random one.
 			if config.APIKey == "" {
 				config.APIKey = utils.GenerateRandomString(15)
@@ -96,7 +83,7 @@ func main() {
 
 			// If API secret is not provided, generate a random one.
 			if config.APISecret == "" {
-				config.APISecret = utils.GenerateRandomString(32)
+				config.APISecret = utils.GenerateRandomString(52)
 			}
 
 			// Log the config.

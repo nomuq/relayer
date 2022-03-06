@@ -38,12 +38,10 @@ func ColorTable() table.Writer {
 func LogConfig(conf config.RelayerConfig) {
 	t := ColorTable()
 	t.AppendHeader(table.Row{
-		"JWT secret key",
 		"API key",
 		"API secret",
 	})
 	t.AppendRow(table.Row{
-		conf.JWTSecret,
 		conf.APIKey,
 		conf.APISecret,
 	})
