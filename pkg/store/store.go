@@ -21,20 +21,16 @@
 package store
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/upper/db/v4"
-	"github.com/upper/db/v4/adapter/cockroachdb"
-	"github.com/upper/db/v4/adapter/mongo"
-	"github.com/upper/db/v4/adapter/mysql"
-	"github.com/upper/db/v4/adapter/postgresql"
+	"github.com/relayer/relayer/pkg/db"
+	"github.com/relayer/relayer/pkg/db/adapter/postgresql"
 )
-
-// Create generic store adapter interface for database postgresql, mysql, etc.
 
 // Store represents a store in the system
 type Store struct {
-	DBClient db.Session
+	DBClient db.Adapter
 }
 
 // NewStore creates a new store
@@ -44,55 +40,24 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 	store := &Store{}
 
 	if adapter == "postgresql" {
-		url, err := postgresql.ParseURL(connectionURL)
+		postgresqlAdapter, err := postgresql.NewPostgreSQLAdapter(connectionURL)
 		if err != nil {
 			return nil, err
 		}
-		session, err := postgresql.Open(url)
-		if err != nil {
-			return nil, err
-		}
-		store.DBClient = session
-	} else if adapter == "mysql" {
-		dsn, err := mysql.ParseURL(connectionURL)
-		if err != nil {
-			return nil, err
-		}
-		session, err := mysql.Open(dsn)
-		if err != nil {
-			return nil, err
-		}
-		store.DBClient = session
-	} else if adapter == "cockroachdb" {
-		url, err := cockroachdb.ParseURL(connectionURL)
-		if err != nil {
-			return nil, err
-		}
-		session, err := cockroachdb.Open(url)
-		if err != nil {
-			return nil, err
-		}
-		store.DBClient = session
-	} else if adapter == "mongo" {
-		url, err := mongo.ParseURL(connectionURL)
-		if err != nil {
-			return nil, err
-		}
-		session, err := mongo.Open(url)
-		if err != nil {
-			return nil, err
-		}
-		store.DBClient = session
+		store.DBClient = postgresqlAdapter
 	} else {
 		return nil, fmt.Errorf("unknown adapter: %s", adapter)
 	}
 
-	db.LC().SetLevel(db.LogLevelError)
+	err := store.DBClient.Open(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
 	return store, nil
 }
 
 // Close closes the store
-func (s *Store) Close() {
-	s.DBClient.Close()
+func (s *Store) Close() error {
+	return s.DBClient.Close()
 }

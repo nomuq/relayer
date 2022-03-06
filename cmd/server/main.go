@@ -25,6 +25,7 @@ import (
 	"math/rand"
 	"net"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/relayer/relayer/pkg/config"
@@ -61,41 +62,42 @@ func main() {
 				Usage:     "Load configuration from `FILE`",
 				TakesFile: true,
 			},
-			&cli.StringFlag{
-				Name:        "api-key",
-				Usage:       "API key for relayer-server",
-				EnvVars:     []string{"RELAYER_API_KEY"},
-				Value:       "",
-				Destination: &config.APIKey,
-			},
-			&cli.StringFlag{
-				Name:        "api-secret",
-				Usage:       "API secret for relayer-server",
-				EnvVars:     []string{"RELAYER_API_SECRET"},
-				Value:       "",
-				Destination: &config.APISecret,
-			},
-			&cli.StringFlag{
-				Name:        "database",
-				Usage:       "Database type",
-				EnvVars:     []string{"RELAYER_DATABASE"},
-				Value:       "postgresql",
-				Destination: &config.Database,
-			},
-			&cli.StringFlag{
-				Name:        "db-connection-url",
-				Usage:       "Database connection URL",
-				EnvVars:     []string{"RELAYER_DB_CONNECTION_URL"},
-				Value:       "postgres://postgres:postgres@localhost:5432/relayer?sslmode=disable",
-				Destination: &config.DBConnectionURL,
-			},
-			&cli.IntFlag{
-				Name:        "port",
-				Usage:       "Port to listen on",
-				EnvVars:     []string{"RELAYER_PORT"},
-				Value:       1203,
-				Destination: &config.Port,
-			},
+			// &cli.StringFlag{
+			// 	Name:        "api-key",
+			// 	Usage:       "API key for relayer-server",
+			// 	EnvVars:     []string{"RELAYER_API_KEY"},
+			// 	Value:       "",
+			// 	Destination: &config.APIKey,
+			// },
+			// &cli.StringFlag{
+			// 	Name:        "api-secret",
+			// 	Usage:       "API secret for relayer-server",
+			// 	EnvVars:     []string{"RELAYER_API_SECRET"},
+			// 	Value:       "",
+			// 	Destination: &config.APISecret,
+			// },
+			// &cli.StringFlag{
+			// 	Name:    "database",
+			// 	Usage:   "Database type",
+			// 	EnvVars: []string{"RELAYER_DATABASE"},
+			// 	Value:   "",
+
+			// 	Destination: &config.Database,
+			// },
+			// &cli.StringFlag{
+			// 	Name:        "db-connection-url",
+			// 	Usage:       "Database connection URL",
+			// 	EnvVars:     []string{"RELAYER_DB_CONNECTION_URL"},
+			// 	Value:       "",
+			// 	Destination: &config.DBConnectionURL,
+			// },
+			// &cli.IntFlag{
+			// 	Name:        "port",
+			// 	Usage:       "Port to listen on",
+			// 	EnvVars:     []string{"RELAYER_PORT"},
+			// 	Value:       0,
+			// 	Destination: &config.Port,
+			// },
 		},
 		Commands: []*cli.Command{
 			{
@@ -118,14 +120,43 @@ func main() {
 				return err
 			}
 
-			// If API key is not provided, generate a random one.
-			if config.APIKey == "" {
+			// check if api key enviroment variable is provided then use it
+			if os.Getenv("RELAYER_API_KEY") != "" {
+				config.APIKey = os.Getenv("RELAYER_API_KEY")
+			} else if config.APIKey == "" {
 				config.APIKey = utils.GenerateRandomString(15)
 			}
 
-			// If API secret is not provided, generate a random one.
-			if config.APISecret == "" {
-				config.APISecret = utils.GenerateRandomString(52)
+			// check if api secret enviroment variable is provided then use it
+			if os.Getenv("RELAYER_API_SECRET") != "" {
+				config.APISecret = os.Getenv("RELAYER_API_SECRET")
+			} else if config.APISecret == "" {
+				config.APISecret = utils.GenerateRandomString(60)
+			}
+
+			// check if database enviroment variable is provided then use it
+			if os.Getenv("RELAYER_DATABASE") != "" {
+				config.Database = os.Getenv("RELAYER_DATABASE")
+			} else if config.Database == "" {
+				config.Database = "postgresql"
+			}
+
+			// check if database connection url enviroment variable is provided then use it
+			if os.Getenv("RELAYER_DB_CONNECTION_URL") != "" {
+				config.DBConnectionURL = os.Getenv("RELAYER_DB_CONNECTION_URL")
+			} else if config.DBConnectionURL == "" {
+				config.DBConnectionURL = "postgres://postgres:postgres@localhost:5432/relayer?sslmode=disable"
+			}
+
+			// check if port enviroment variable is provided then use it
+			if os.Getenv("RELAYER_PORT") != "" {
+				port, err := strconv.Atoi(os.Getenv("RELAYER_PORT"))
+				if err != nil {
+					return err
+				}
+				config.Port = port
+			} else if config.Port == 0 {
+				config.Port = 1203
 			}
 
 			// write the config to a file
