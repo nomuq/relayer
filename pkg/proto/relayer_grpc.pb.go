@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RelayerClient interface {
+	GetAuthToken(ctx context.Context, in *GetAuthTokenRequest, opts ...grpc.CallOption) (*GetAuthTokenResponse, error)
 	Authenticate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*User, error)
 }
 
@@ -31,6 +32,15 @@ type relayerClient struct {
 
 func NewRelayerClient(cc grpc.ClientConnInterface) RelayerClient {
 	return &relayerClient{cc}
+}
+
+func (c *relayerClient) GetAuthToken(ctx context.Context, in *GetAuthTokenRequest, opts ...grpc.CallOption) (*GetAuthTokenResponse, error) {
+	out := new(GetAuthTokenResponse)
+	err := c.cc.Invoke(ctx, "/relayer.Relayer/GetAuthToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *relayerClient) Authenticate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*User, error) {
@@ -46,6 +56,7 @@ func (c *relayerClient) Authenticate(ctx context.Context, in *Empty, opts ...grp
 // All implementations must embed UnimplementedRelayerServer
 // for forward compatibility
 type RelayerServer interface {
+	GetAuthToken(context.Context, *GetAuthTokenRequest) (*GetAuthTokenResponse, error)
 	Authenticate(context.Context, *Empty) (*User, error)
 	mustEmbedUnimplementedRelayerServer()
 }
@@ -54,6 +65,9 @@ type RelayerServer interface {
 type UnimplementedRelayerServer struct {
 }
 
+func (UnimplementedRelayerServer) GetAuthToken(context.Context, *GetAuthTokenRequest) (*GetAuthTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAuthToken not implemented")
+}
 func (UnimplementedRelayerServer) Authenticate(context.Context, *Empty) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
 }
@@ -68,6 +82,24 @@ type UnsafeRelayerServer interface {
 
 func RegisterRelayerServer(s grpc.ServiceRegistrar, srv RelayerServer) {
 	s.RegisterService(&Relayer_ServiceDesc, srv)
+}
+
+func _Relayer_GetAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAuthTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelayerServer).GetAuthToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/relayer.Relayer/GetAuthToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelayerServer).GetAuthToken(ctx, req.(*GetAuthTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Relayer_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -95,6 +127,10 @@ var Relayer_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "relayer.Relayer",
 	HandlerType: (*RelayerServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetAuthToken",
+			Handler:    _Relayer_GetAuthToken_Handler,
+		},
 		{
 			MethodName: "Authenticate",
 			Handler:    _Relayer_Authenticate_Handler,
