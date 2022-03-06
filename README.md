@@ -1,5 +1,5 @@
 # relayer
-**relayer is a high performance instant messaging server.**
+**relayer is a high performance instant messaging server.** (in development)
 
 - Custom Authentication System (CAS)
 - Generic Database Access Layer (GDA)
