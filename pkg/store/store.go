@@ -33,7 +33,7 @@ import (
 // Create generic store adapter interface for database postgresql, mysql, etc.
 
 type Store struct {
-	Session db.Session
+	DBClient db.Session
 }
 
 func NewStore(adapter string, connectionURL string) (*Store, error) {
@@ -50,7 +50,7 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 		if err != nil {
 			return nil, err
 		}
-		store.Session = session
+		store.DBClient = session
 	} else if adapter == "mysql" {
 		dsn, err := mysql.ParseURL(connectionURL)
 		if err != nil {
@@ -60,7 +60,7 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 		if err != nil {
 			return nil, err
 		}
-		store.Session = session
+		store.DBClient = session
 	} else if adapter == "cockroachdb" {
 		url, err := cockroachdb.ParseURL(connectionURL)
 		if err != nil {
@@ -70,7 +70,7 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 		if err != nil {
 			return nil, err
 		}
-		store.Session = session
+		store.DBClient = session
 	} else if adapter == "mongo" {
 		url, err := mongo.ParseURL(connectionURL)
 		if err != nil {
@@ -80,7 +80,7 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 		if err != nil {
 			return nil, err
 		}
-		store.Session = session
+		store.DBClient = session
 	} else {
 		return nil, fmt.Errorf("unknown adapter: %s", adapter)
 	}
@@ -89,5 +89,5 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 }
 
 func (s *Store) Close() {
-	s.Session.Close()
+	s.DBClient.Close()
 }

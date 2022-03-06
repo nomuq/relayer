@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Create tables if not exists
+// AutoMigrate Create tables if not exists
 func (s *Store) AutoMigrate(database string) error {
 
 	sql := ""
@@ -33,7 +33,7 @@ func (s *Store) AutoMigrate(database string) error {
 	}
 
 	// Create new table
-	builder := s.Session.SQL()
+	builder := s.DBClient.SQL()
 	_, err := builder.Exec(sql)
 	if err != nil {
 		return err

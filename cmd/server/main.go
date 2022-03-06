@@ -38,7 +38,7 @@ func init() {
 }
 
 func main() {
-	config := cfg.RelayerConfig{}
+	config := cfg.NewRelayerConfig()
 	app := &cli.App{
 		Name:        "relayer-server",
 		Usage:       `High performance Instant messaging server.`,
