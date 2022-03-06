@@ -22,6 +22,7 @@ package models
 
 import "time"
 
+// User represents a user in the system
 type User struct {
 	ID        string     `json:"id" db:"id,omitempty"`
 	Username  string     `json:"username" db:"username"`

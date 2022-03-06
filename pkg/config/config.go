@@ -29,20 +29,32 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// RelayerConfig represents the relayer config
 type RelayerConfig struct {
-	APIKey          string `yaml:"api_key"`
-	APISecret       string `yaml:"api_secret"`
-	Database        string `yaml:"database"`
+	// APIKey is the API key for the relayer
+	APIKey string `yaml:"api_key"`
+	// APISecret is the API secret for the relayer
+	APISecret string `yaml:"api_secret"`
+	// Database is the type of database to use
+	Database string `yaml:"database"`
+	// DatabaseHost is the connection string for the database
 	DBConnectionURL string `yaml:"db_connection_url"`
-	path            string
+	// ConfigPath is the path to the config file
+	path string
 }
 
+// NewRelayerConfig returns a new relayer config
 func NewRelayerConfig() *RelayerConfig {
 	return &RelayerConfig{}
 }
 
+// Load loads the config from the given path
 func (c *RelayerConfig) Load(path string) error {
+
+	// set path for config file
 	c.path = path
+
+	// if config file doesn't exist, create it
 	if c.path == "" {
 		c.path = "./config.yaml"
 	}
@@ -59,18 +71,21 @@ func (c *RelayerConfig) Load(path string) error {
 	// load config file
 	err := c.LoadYAML()
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 
 	return nil
 }
 
+// LoadYAML loads and parses the config file
 func (c *RelayerConfig) LoadYAML() error {
+	// read file contents into byte array
 	yfile, err := ioutil.ReadFile(c.path)
 	if err != nil {
 		return err
 	}
+
+	// unmarshal yaml
 	err = yaml.Unmarshal(yfile, &c)
 	if err != nil {
 		return err
@@ -78,12 +93,15 @@ func (c *RelayerConfig) LoadYAML() error {
 	return nil
 }
 
+// Save saves the config to the given path
 func (c *RelayerConfig) Write() error {
+	// marshal config
 	data, err := yaml.Marshal(&c)
 	if err != nil {
 		return err
 	}
 
+	// write to file
 	err = ioutil.WriteFile(c.path, data, 0644)
 	if err != nil {
 		return err
@@ -91,15 +109,11 @@ func (c *RelayerConfig) Write() error {
 	return nil
 }
 
-func ColorTable() table.Writer {
-	tw := table.NewWriter()
-	tw.SetOutputMirror(os.Stdout)
-	tw.SetStyle(table.StyleLight)
-	return tw
-}
-
+// Print prints the config to the console
 func (c *RelayerConfig) Print() {
-	t := ColorTable()
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.SetStyle(table.StyleLight)
 	t.AppendHeader(table.Row{
 		"API key",
 		"API secret",

@@ -25,6 +25,7 @@ import (
 	"os"
 )
 
+// GenerateRandomString generates a random string of the given length
 func GenerateRandomString(length int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	b := make([]rune, length)

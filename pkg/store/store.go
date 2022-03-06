@@ -32,10 +32,12 @@ import (
 
 // Create generic store adapter interface for database postgresql, mysql, etc.
 
+// Store represents a store in the system
 type Store struct {
 	DBClient db.Session
 }
 
+// NewStore creates a new store
 func NewStore(adapter string, connectionURL string) (*Store, error) {
 
 	// Create new store instance
@@ -88,6 +90,7 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 	return store, nil
 }
 
+// Close closes the store
 func (s *Store) Close() {
 	s.DBClient.Close()
 }

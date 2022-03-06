@@ -33,6 +33,12 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func init() {
 	rand.Seed(time.Now().Unix())
 }
@@ -79,8 +85,19 @@ func main() {
 				Destination: &config.DBConnectionURL,
 			},
 		},
-		Commands: []*cli.Command{},
+		Commands: []*cli.Command{
+			{
+				Name:  "version",
+				Usage: `Print the version number of relayer-server`,
+				Action: func(c *cli.Context) error {
+					utils.PrintVersion(version, commit, date)
+					return nil
+				},
+			},
+		},
 		Action: func(c *cli.Context) error {
+
+			// Print Relayer Logo and Version Info to the console
 			fmt.Println(utils.RelayerLogo())
 
 			// Load configuration from file
@@ -115,6 +132,7 @@ func main() {
 			}
 			defer store.Close()
 
+			// Auto migrate the database. (Create tables if not exists)
 			err = store.AutoMigrate(config.Database)
 			if err != nil {
 				return err
@@ -124,7 +142,9 @@ func main() {
 		},
 	}
 
+	// Run the app.
 	if err := app.Run(os.Args); err != nil {
+		// Log the error and exit.
 		logrus.Errorln(err)
 	}
 }
