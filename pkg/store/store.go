@@ -87,6 +87,8 @@ func NewStore(adapter string, connectionURL string) (*Store, error) {
 		return nil, fmt.Errorf("unknown adapter: %s", adapter)
 	}
 
+	db.LC().SetLevel(db.LogLevelError)
+
 	return store, nil
 }
 
