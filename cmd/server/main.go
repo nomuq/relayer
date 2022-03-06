@@ -21,6 +21,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -81,7 +82,7 @@ func main() {
 		},
 		Commands: []*cli.Command{},
 		Action: func(c *cli.Context) error {
-			logrus.Infoln("relayer-server is a high performance instant messaging server.")
+			fmt.Println(utils.RelayerLogo())
 
 			// If JWT secret key is not provided, generate a random one.
 			if config.JWTSecret == "" {

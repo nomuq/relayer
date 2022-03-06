@@ -21,6 +21,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -47,4 +48,7 @@ func LogConfig(conf config.RelayerConfig) {
 		conf.APISecret,
 	})
 	t.Render()
+
+	// Add Extra new line after table
+	fmt.Println()
 }
