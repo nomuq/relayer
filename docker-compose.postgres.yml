@@ -22,11 +22,53 @@ version: '3.7'
 services:
   postgres:
     image: postgres:14.2
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     environment:
       - POSTGRES_USER=relayer
       - POSTGRES_PASSWORD=relayer
       - POSTGRES_DB=relayer
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - internal
+
+  relayer-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - RELAYER_DATABASE=postgresql
+      - RELAYER_DB_CONNECTION_URL=postgres://relayer:relayer@postgres:5432/relayer?sslmode=disable
+    # ports:
+    #   - "1203:1203"
+    volumes:
+      - ./data/relayer:/etc/relayer
+    networks:
+      - internal
+    depends_on:
+      - postgres
+    restart: always
+
+  envoy:
+    build:
+      context: ./envoy
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    links:
+      - relayer-server
+    networks:
+      - internal
+    depends_on:
+      - postgres
+      - relayer-server
+    restart: always
+
+volumes:
+  postgres_data:
+
+networks:
+  internal:
+    driver: bridge

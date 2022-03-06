@@ -39,6 +39,8 @@ type RelayerConfig struct {
 	Database string `yaml:"database"`
 	// DatabaseHost is the connection string for the database
 	DBConnectionURL string `yaml:"db_connection_url"`
+	// Port is the port to listen on
+	Port int `yaml:"port"`
 	// ConfigPath is the path to the config file
 	path string
 }

@@ -23,14 +23,18 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"net"
 	"os"
 	"time"
 
-	cfg "github.com/relayer/relayer/pkg/config"
-	str "github.com/relayer/relayer/pkg/store"
+	"github.com/relayer/relayer/pkg/config"
+	"github.com/relayer/relayer/pkg/proto"
+	"github.com/relayer/relayer/pkg/relayer"
+	"github.com/relayer/relayer/pkg/store"
 	"github.com/relayer/relayer/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"google.golang.org/grpc"
 )
 
 var (
@@ -44,7 +48,7 @@ func init() {
 }
 
 func main() {
-	config := cfg.NewRelayerConfig()
+	config := config.NewRelayerConfig()
 	app := &cli.App{
 		Name:        "relayer-server",
 		Usage:       `High performance Instant messaging server.`,
@@ -83,6 +87,13 @@ func main() {
 				EnvVars:     []string{"RELAYER_DB_CONNECTION_URL"},
 				Value:       "postgres://postgres:postgres@localhost:5432/relayer?sslmode=disable",
 				Destination: &config.DBConnectionURL,
+			},
+			&cli.IntFlag{
+				Name:        "port",
+				Usage:       "Port to listen on",
+				EnvVars:     []string{"RELAYER_PORT"},
+				Value:       1203,
+				Destination: &config.Port,
 			},
 		},
 		Commands: []*cli.Command{
@@ -126,7 +137,7 @@ func main() {
 			config.Print()
 
 			// Initialize the database.
-			store, err := str.NewStore(config.Database, config.DBConnectionURL)
+			store, err := store.NewStore(config.Database, config.DBConnectionURL)
 			if err != nil {
 				return err
 			}
@@ -134,6 +145,27 @@ func main() {
 
 			// Auto migrate the database. (Create tables if not exists)
 			err = store.AutoMigrate(config.Database)
+			if err != nil {
+				return err
+			}
+
+			// Create new gRPC server
+			server := grpc.NewServer()
+
+			// Register the relayer services with the gRPC server.
+			relayer := relayer.NewRelayerServer(store)
+			proto.RegisterRelayerServer(server, relayer)
+
+			// listen on the port
+			port := fmt.Sprintf("0.0.0.0:%d", config.Port)
+			listener, err := net.Listen("tcp", port)
+			if err != nil {
+				return err
+			}
+
+			// start the server
+			logrus.Infof("Starting server on port %d", config.Port)
+			err = server.Serve(listener)
 			if err != nil {
 				return err
 			}
