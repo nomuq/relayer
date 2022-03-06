@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/relayer/relayer/pkg/config"
+	"github.com/relayer/relayer/pkg/interceptor"
 	"github.com/relayer/relayer/pkg/proto"
 	"github.com/relayer/relayer/pkg/relayer"
 	"github.com/relayer/relayer/pkg/store"
@@ -149,8 +150,14 @@ func main() {
 				return err
 			}
 
+			// Initialize interceptors.
+			interceptor := interceptor.NewInterceptor(config)
+
 			// Create new gRPC server
-			server := grpc.NewServer()
+			server := grpc.NewServer(
+				grpc.UnaryInterceptor(interceptor.UnaryInterceptor),
+				grpc.StreamInterceptor(interceptor.StreamInterceptor),
+			)
 
 			// Register the relayer services with the gRPC server.
 			relayer := relayer.NewRelayerServer(store)
