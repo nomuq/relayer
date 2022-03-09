@@ -76,5 +76,5 @@ CREATE TABLE messages (
     type message_type NOT NULL DEFAULT 'text',
     metadata JSONB,
     channel_id TEXT NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
-    from_user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+    sender_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
