@@ -4,10 +4,10 @@
 - Custom Authentication System (CAS)
 - Generic Database Access Layer (GDA)
 - Supported Databases:
-  - MySQL
+  - ~~MySQL [TBD]~~
   - PostgreSQL
-  - MongoDB
-  - CockroachDB
+  - ~~MongoDB [TBD]~~
+  - ~~CockroachDB [TBD]~~
 
 **Environment Variables**
 
