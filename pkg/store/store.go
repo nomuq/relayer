@@ -39,7 +39,7 @@ func NewStore(ctx context.Context, adapter string, connectionURL string) (*Store
 	// Create new store instance
 	store := &Store{}
 
-	if adapter == "postgresql" {
+	if adapter == "postgresql" || adapter == "postgres" || adapter == "pg" || adapter == "cockroachdb" {
 		postgresqlAdapter, err := postgresql.NewPostgreSQLAdapter(connectionURL)
 		if err != nil {
 			return nil, err

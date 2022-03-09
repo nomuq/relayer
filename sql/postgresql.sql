@@ -22,8 +22,6 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Drop all existing tables [TODO: Remove this once we have a migration tool]
-
--- Drop all existing tables with cascade
 DROP TABLE IF EXISTS "public"."users" CASCADE;
 DROP TABLE IF EXISTS "public"."channels" CASCADE;
 DROP TABLE IF EXISTS "public"."channel_members" CASCADE;

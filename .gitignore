@@ -19,3 +19,5 @@ data/
 dist/
 
 config.yaml
+sql/.DS_Store
+tinode.sql
