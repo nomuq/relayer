@@ -27,6 +27,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 DROP TABLE IF EXISTS "public"."users" CASCADE;
 DROP TABLE IF EXISTS "public"."channels" CASCADE;
 DROP TABLE IF EXISTS "public"."channel_members" CASCADE;
+DROP TABLE IF EXISTS "public"."subscriptions" CASCADE;
 DROP TABLE IF EXISTS "public"."messages" CASCADE;
 
 -- Drop all types
@@ -54,8 +55,8 @@ CREATE TABLE channels (
     metadata JSONB
 );
 
--- channel_members
-CREATE TABLE channel_members (
+-- subscriptions
+CREATE TABLE subscriptions (
     channel_id TEXT NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
     user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -76,4 +77,3 @@ CREATE TABLE messages (
     metadata JSONB,
     channel_id TEXT NOT NULL REFERENCES channels(id) ON DELETE CASCADE
 );
-
