@@ -95,6 +95,14 @@ func (interceptor ClientInterceptor) StreamClientInterceptor(ctx context.Context
 		md = metadata.New(nil)
 	}
 
+	if interceptor.apiKey != "" {
+		md.Set("api-key", interceptor.apiKey)
+	}
+
+	if interceptor.apiSecret != "" {
+		md.Set("api-secret", interceptor.apiSecret)
+	}
+
 	if interceptor.accessToken != "" {
 		md.Set("authorization", interceptor.accessToken)
 	}
