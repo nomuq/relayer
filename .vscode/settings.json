@@ -1,0 +1,16 @@
+{
+    "protoc": {
+        "path": "/usr/local/bin/protoc",
+        "compile_on_save": false,
+        "options": [
+            "--proto_path=${workspaceRoot}",
+            "--proto_path=${workspaceRoot}/protos",
+            "--proto_path=${workspaceRoot}/protos/google",
+            "--proto_path=${workspaceRoot}/protos/google/api",
+            "--proto_path=${workspaceRoot}/protos/google/api/annotations",
+            "--proto_path=${workspaceRoot}/protos/google/api/http",
+            "--proto_path=${workspaceRoot}/protos/google/api/resource",
+            "--go_out=plugins=grpc:${workspaceRoot}/pkg/proto"
+        ]
+    }
+}
