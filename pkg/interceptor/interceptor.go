@@ -45,11 +45,12 @@ func NewInterceptor(config *config.RelayerConfig) *Interceptor {
 }
 
 func (interceptor *Interceptor) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	logrus.Debugf(info.FullMethod)
 	err := interceptor.authorize(ctx, info.FullMethod, req)
 	if err != nil {
+		logrus.Errorf(info.FullMethod, err)
 		return nil, err
 	}
+	logrus.Debugf(info.FullMethod)
 	return handler(ctx, req)
 }
 
@@ -57,8 +58,10 @@ func (interceptor *Interceptor) StreamInterceptor(srv interface{}, stream grpc.S
 	logrus.Debugf(info.FullMethod)
 	err := interceptor.authorize(stream.Context(), info.FullMethod, srv)
 	if err != nil {
+		logrus.Errorf(info.FullMethod, err)
 		return err
 	}
+	logrus.Debugf(info.FullMethod)
 	return handler(srv, stream)
 }
 
