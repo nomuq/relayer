@@ -35,8 +35,6 @@ type RelayerConfig struct {
 	APIKey string `yaml:"api_key"`
 	// APISecret is the API secret for the relayer
 	APISecret string `yaml:"api_secret"`
-	// Database is the type of database to use
-	Database string `yaml:"database"`
 	// DatabaseHost is the connection string for the database
 	DBConnectionURL string `yaml:"db_connection_url"`
 	// Port is the port to listen on

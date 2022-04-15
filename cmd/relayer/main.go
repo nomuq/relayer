@@ -98,18 +98,11 @@ func main() {
 				config.APISecret = utils.GenerateRandomString(60)
 			}
 
-			// check if database enviroment variable is provided then use it
-			if os.Getenv("RELAYER_DATABASE") != "" {
-				config.Database = os.Getenv("RELAYER_DATABASE")
-			} else if config.Database == "" {
-				config.Database = "postgresql"
-			}
-
 			// check if database connection url enviroment variable is provided then use it
 			if os.Getenv("RELAYER_DB_CONNECTION_URL") != "" {
 				config.DBConnectionURL = os.Getenv("RELAYER_DB_CONNECTION_URL")
 			} else if config.DBConnectionURL == "" {
-				config.DBConnectionURL = "postgres://postgres:postgres@localhost:5432/relayer?sslmode=disable"
+				config.DBConnectionURL = "mongodb://localhost:27017"
 			}
 
 			// check if port enviroment variable is provided then use it
@@ -133,17 +126,11 @@ func main() {
 			config.Print()
 
 			// Initialize the database.
-			store, err := store.NewStore(c.Context, config.Database, config.DBConnectionURL)
+			store, err := store.NewStore(c.Context, config.DBConnectionURL)
 			if err != nil {
 				return err
 			}
-			defer store.Close()
-
-			// Auto migrate the database. (Create tables if not exists)
-			err = store.AutoMigrate(c.Context)
-			if err != nil {
-				return err
-			}
+			defer store.Close(c.Context)
 
 			// Initialize interceptors.
 			interceptor := interceptor.NewInterceptor(config)
