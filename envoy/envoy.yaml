@@ -1,8 +1,3 @@
-admin:
-  access_log_path: /dev/stdout
-  address:
-    socket_address: { address: 0.0.0.0, port_value: 9901 }
-
 static_resources:
   listeners:
     - name: listener_0
@@ -49,5 +44,5 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: relayer-server
+                      address: relayer
                       port_value: 1203

@@ -22,6 +22,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/relayer/relayer/pkg/config"
 	"github.com/sirupsen/logrus"
@@ -43,7 +44,8 @@ func main() {
 	}
 
 	conn, err := grpc.Dial(
-		"localhost:1203",
+		"localhost:8080",
+		grpc.WithTimeout(time.Second*10),
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
 		grpc.WithUnaryInterceptor(interceptor.UnaryClientInterceptor),
