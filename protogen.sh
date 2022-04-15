@@ -23,6 +23,6 @@ fi
 
 mkdir -p pkg/proto
 
-protoc --proto_path=. --go_out=pkg/proto --go_opt=paths=source_relative \
+protoc --proto_path=protos --go_out=pkg/proto --go_opt=paths=source_relative \
     --go-grpc_out=pkg/proto --go-grpc_opt=paths=source_relative \
-    relayer.proto
+    protos/*.proto

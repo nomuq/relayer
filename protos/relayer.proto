@@ -24,33 +24,4 @@ package relayer;
 
 option go_package = "github.com/relayer/relayer;proto";
 
-// Empty is an empty message
-message Empty {}
-
-// Timestamp is a special type that is used to represent a timestamp value in a MongoDB
-message Timestamp {
-  int64 seconds = 1;
-  int32 nanos = 2;
-}
-
-message User {
-  string id = 1;
-  string username = 2;
-  Timestamp created_at = 3;
-  Timestamp updated_at = 4;
-}
-
-message GetAuthTokenRequest {
-  string id = 1;
-  string username = 2;
-}
-
-message GetAuthTokenResponse {
-  User user = 1;
-  string token = 2;
-}
-
-service Relayer {
-  rpc GetAuthToken(GetAuthTokenRequest) returns (GetAuthTokenResponse);
-  rpc Authenticate(Empty) returns (User);
-}
+service Relayer {}

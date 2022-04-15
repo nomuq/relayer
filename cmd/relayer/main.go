@@ -28,6 +28,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/relayer/relayer/pkg/admin"
 	"github.com/relayer/relayer/pkg/config"
 	"github.com/relayer/relayer/pkg/interceptor"
 	"github.com/relayer/relayer/pkg/proto"
@@ -145,6 +146,10 @@ func main() {
 			// Register the relayer services with the gRPC server.
 			relayer := relayer.NewRelayerServer(config, store)
 			proto.RegisterRelayerServer(server, relayer)
+
+			// Register the admin services with the gRPC server.
+			admin := admin.NewRelayerAdminServer(config, store)
+			proto.RegisterRelayerAdminServer(server, admin)
 
 			// listen on the port
 			port := fmt.Sprintf("0.0.0.0:%d", config.Port)

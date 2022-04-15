@@ -18,7 +18,7 @@
  *
  */
 
-package relayer
+package admin
 
 import (
 	"github.com/relayer/relayer/pkg/config"
@@ -26,14 +26,14 @@ import (
 	"github.com/relayer/relayer/pkg/store"
 )
 
-type RelayerServer struct {
-	proto.UnimplementedRelayerServer
+type RelayerAdminServer struct {
+	proto.UnimplementedRelayerAdminServer
 	config *config.RelayerConfig
 	store  *store.Store
 }
 
-func NewRelayerServer(config *config.RelayerConfig, store *store.Store) *RelayerServer {
-	return &RelayerServer{
+func NewRelayerAdminServer(config *config.RelayerConfig, store *store.Store) *RelayerAdminServer {
+	return &RelayerAdminServer{
 		config: config,
 		store:  store,
 	}

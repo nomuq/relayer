@@ -24,7 +24,6 @@ import (
 	"context"
 
 	"github.com/relayer/relayer/pkg/config"
-	"github.com/relayer/relayer/pkg/proto"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -53,15 +52,16 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("failed to dial: %v", err)
 	}
-	client := proto.NewRelayerClient(conn)
-	resp, err := client.GetAuthToken(
-		context.Background(),
-		&proto.GetAuthTokenRequest{},
-	)
-	if err != nil {
-		logrus.Fatalf("failed to call: %v", err)
-	}
-	logrus.Infof("resp: %v", resp)
+	// client := proto.NewRelayerClient(conn)
+	defer conn.Close()
+	// resp, err := client.GetAuthToken(
+	// 	context.Background(),
+	// 	&proto.GetAuthTokenRequest{},
+	// )
+	// if err != nil {
+	// 	logrus.Fatalf("failed to call: %v", err)
+	// }
+	// logrus.Infof("resp: %v", resp)
 }
 
 // ClientInterceptor is a gRPC interceptor that adds the access token to the request
