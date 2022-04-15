@@ -74,6 +74,7 @@ func main() {
 			},
 		},
 		Action: func(c *cli.Context) error {
+			logrus.SetLevel(logrus.DebugLevel)
 
 			// Print Relayer Logo and Version Info to the console
 			fmt.Println(utils.RelayerLogo())

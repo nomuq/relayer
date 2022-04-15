@@ -25,6 +25,7 @@ import (
 	"fmt"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/sirupsen/logrus"
 
 	"github.com/relayer/relayer/pkg/config"
 	"google.golang.org/grpc"
@@ -44,6 +45,7 @@ func NewInterceptor(config *config.RelayerConfig) *Interceptor {
 }
 
 func (interceptor *Interceptor) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	logrus.Debugf(info.FullMethod)
 	err := interceptor.authorize(ctx, info.FullMethod, req)
 	if err != nil {
 		return nil, err
@@ -52,6 +54,7 @@ func (interceptor *Interceptor) UnaryInterceptor(ctx context.Context, req interf
 }
 
 func (interceptor *Interceptor) StreamInterceptor(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	logrus.Debugf(info.FullMethod)
 	err := interceptor.authorize(stream.Context(), info.FullMethod, srv)
 	if err != nil {
 		return err
