@@ -23,6 +23,7 @@ package main
 import (
 	"context"
 
+	"github.com/relayer/relayer/pkg/config"
 	"github.com/relayer/relayer/pkg/proto"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -30,9 +31,16 @@ import (
 )
 
 func main() {
+	config := config.NewRelayerConfig()
+
+	err := config.Load("config.yaml")
+	if err != nil {
+		logrus.Fatalf("failed to load config: %v", err)
+	}
+
 	interceptor := &ClientInterceptor{
-		apiKey:    "cXjnRFK8Naep171",
-		apiSecret: "V59vTKSOahyEGgaOzYKYm5m4tnoReDGuxaRMnkMeVm5hSFXCZtYAqQMyt7ZM",
+		apiKey:    config.APIKey,
+		apiSecret: config.APISecret,
 	}
 
 	conn, err := grpc.Dial(
